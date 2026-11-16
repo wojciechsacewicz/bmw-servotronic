@@ -3,6 +3,7 @@
 
 import json
 import re
+import struct
 import sys
 import unicodedata
 from pathlib import Path
@@ -11,6 +12,7 @@ from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 ROOT_FILES = {"README.md", "AGENTS.md", "RIGHTS.md", ".gitignore"}
+CHART = "assets/e84-vs-e92.png"
 PRIVATE_PATTERNS = {
     "vehicle identifier": r"\bW[A-HJ-NPR-Z0-9]{16}\b",
     "home directory": r"/(?:home|Users)/[A-Za-z0-9_.-]+/",
@@ -38,7 +40,30 @@ def allowed(path):
     relative = path.relative_to(ROOT)
     return (str(relative) in ROOT_FILES or
             relative.parent == Path("docs") and path.suffix == ".md" or
-            str(relative) in {"data/attempts.json", "scripts/check_repository.py"})
+            str(relative) in {"data/attempts.json", "data/e84-vs-e92.json", CHART,
+                              "scripts/check_repository.py", "scripts/render_comparison.py"})
+
+
+def chart_metadata(path):
+    content = path.read_bytes()
+    if content[:8] != b"\x89PNG\r\n\x1a\n" or content[12:16] != b"IHDR":
+        raise ValueError("invalid PNG header")
+    if struct.unpack(">II", content[16:24]) != (1456, 560):
+        raise ValueError("unexpected chart dimensions")
+    offset = 8
+    text = []
+    while offset < len(content):
+        length = struct.unpack(">I", content[offset:offset + 4])[0]
+        kind = content[offset + 4:offset + 8]
+        end = offset + 12 + length
+        if end > len(content):
+            raise ValueError("truncated PNG chunk")
+        if kind == b"tEXt":
+            text.append(content[offset + 8:end - 4].decode("latin-1"))
+        elif kind not in {b"IHDR", b"IDAT", b"IEND", b"pHYs"}:
+            raise ValueError("unreviewed PNG chunk")
+        offset = end
+    return "\n".join(text)
 
 
 def check():
@@ -64,9 +89,9 @@ def check():
     for path in files:
         relative = path.relative_to(ROOT)
         try:
-            text = path.read_text(encoding="utf-8")
-        except (UnicodeError, OSError):
-            errors.append(f"{relative}: unreadable text or binary artifact")
+            text = chart_metadata(path) if str(relative) == CHART else path.read_text(encoding="utf-8")
+        except (UnicodeError, OSError, ValueError, struct.error) as error:
+            errors.append(f"{relative}: unreadable text or unreviewed image: {error}")
             continue
         for finding in private_findings(text):
             errors.append(f"{relative}: possible {finding}")
@@ -107,6 +132,23 @@ def check():
                     errors.append(f"{entry['id']}: unknown related attempt")
     except (OSError, ValueError, TypeError, KeyError) as error:
         errors.append(f"invalid attempt dataset or ledger: {error}")
+
+    try:
+        comparison = json.loads((ROOT / "data/e84-vs-e92.json").read_text())
+        samples = comparison["samples"]
+        keys = {(row["speed_kmh"], row["handwheel_torque_raw"]) for row in samples}
+        expected = {(speed, raw) for speed in (0, 15) for raw in (68, 100, 136, 207)}
+        if len(samples) != 8 or keys != expected:
+            errors.append("chart must retain all eight matched positive-input samples")
+        method = (ROOT / "docs/comparison.md").read_text()
+        for row in samples:
+            delta = 100 * (row["e84_contribution"] / row["e92_contribution"] - 1)
+            table_row = (f"| {row['speed_kmh']} km/h | {row['handwheel_torque_nm']:.2f} Nm | "
+                         f"{row['e92_contribution']} | {row['e84_contribution']} | {delta:+.1f}% |")
+            if table_row not in method:
+                errors.append("chart method table differs from comparison data")
+    except (OSError, ValueError, TypeError, KeyError, ZeroDivisionError) as error:
+        errors.append(f"invalid chart comparison data: {error}")
 
     for error in errors:
         print(error, file=sys.stderr)

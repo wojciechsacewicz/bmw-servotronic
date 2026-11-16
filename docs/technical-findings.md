@@ -31,6 +31,8 @@ In the recorded GUI investigation, the EPS parameter was `VARIANTENCODIERUNG_3` 
 
 The C03 schema includes 22 named profiles. E90 basis is decimal 13, E84 basis is decimal 14, and the other examined E84 variant is decimal 15. Decimal 14 is hexadecimal 0E. Do not confuse a schema label, a stored index, an active index, and an entitlement verdict.
 
+[The README chart and all eight comparisons](comparison.md) show the calculated changes in plain language.
+
 ## Why E84 became the practical candidate
 
 The investigation traced profile-dependent curves into a contribution added to requested motor torque. At 1 Nm main handwheel input with other composite terms zero, the tested contribution was 125 raw counts for profile 9, 82 for profile 13, and 182 for profiles 14/15. At 2 Nm the corresponding values were 295, 184, and 448. See A097.

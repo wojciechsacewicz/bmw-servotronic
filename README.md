@@ -1,70 +1,53 @@
-# BMW E92 steering research
+# E84 steering coding on my BMW E92
 
-I tried to unlock Servotronic for free on my BMW E92. I failed to unlock it.
+> I believe there must be a way to unlock Servotronic for free. I just haven't found it. Maybe you can, with the help of your AI agents. If you do, please contact me or open a PR!
 
-But the research with Codex led to something that made the car much nicer to drive. We selected the **E84 basis steering profile already present in the EPS software**. As of 16 November 2026, I've been driving with it daily for roughly a week or two, possibly longer. Parking is much easier, and the steering still feels very good on the highway. For me, it was a game changer.
+Changing my E92's steering setting to **E84_basis** made parking much easier. It still feels very good on the highway. I've been driving with it daily for roughly a week or two, possibly longer, as reported on 16 November 2026.
 
-That is my experience with one car. This repository explains how we got there, everything we tried, what failed, and what remains unknown.
+This selects a setting already present in the electric power steering controller, or EPS. The saved diagnostic reads confirm that it stayed active after an ignition cycle. It did not unlock Servotronic, which was the original goal.
 
-## What actually worked?
+![E84 versus E92: one calculated steering-assist value is 46 to 83 percent higher at standstill and 27 percent lower to 3 percent higher at 15 km/h. Steering effort was not measured.](assets/e84-vs-e92.png)
 
-The recorded change was **coding a different calibration profile**, not flashing E84 firmware. The existing EPS application stayed the subject of the investigation. The saved readbacks show `E84_basis`, index `0E`, retained and active after an ignition cycle on 1 November 2026.
+At the four tested inputs, this part of the calculation was **46-83% higher while parked**. That does not mean the wheel is 46-83% lighter. At 15 km/h, the same value ranged from 27% lower to 3% higher. [Method and every sample](docs/comparison.md).
 
-The controller described it as `E84 ohne SA216`, meaning E84 without the Servotronic option. We did not generate a working FSC, establish a new Servotronic entitlement, or demonstrate a firmware replacement.
+## Want to try this with your AI agent?
 
-| Question | Result | Evidence |
-| --- | --- | --- |
-| Free Servotronic activation? | Not achieved. | Historical research, A114. |
-| E84 basis profile selected? | Confirmed by stored and active-profile diagnostic readback. | Diagnostic record, A111. |
-| Did it survive an ignition cycle? | Yes, in the saved 1 November readback. | Diagnostic record, A111. |
-| Does it feel better? | Yes, according to my daily-driving experience reported on 16 November. | Owner report. |
-| Proven suitable for every E92? | No. Exact rack compatibility and controlled road testing remain unresolved. | Research limitation. |
-
-[Evidence levels and source coverage](docs/evidence.md) explains what each label means.
-
-## Start here
-
-- **I want the story.** Read [what changed and how it feels](docs/outcome.md), then [the research timeline](docs/timeline.md).
-- **I want help with my car.** Give your agent the prompt below. Start with identifying your own EPS and saving its original coding.
-- **I want to research this further.** Read [the technical findings](docs/technical-findings.md), [failed approaches](docs/failed-approaches.md), and [open questions](docs/open-questions.md).
-- **I want every recorded attempt.** Read [all 114 attempts](docs/attempts.md), or use [the structured dataset](data/attempts.json).
-
-## Give this repository to your AI agent
-
-Copy this prompt alongside the repository link or a local checkout:
+Give it this repository and the prompt below. You don't need to understand the research first. The agent should start by identifying your steering controller and comparing it with mine.
 
 ```text
-Read this repository's AGENTS.md and docs/agent-guide.md first.
-Help me assess whether the recorded E84 basis coding experiment applies
-to my BMW. Begin with my goal and the minimum vehicle/controller details.
-Compare my evidence against the recorded baseline. Explain what matched,
-what did not, and what is still unknown. Use the failed-route ledger so we
-do not repeat approaches without new evidence. Before any vehicle write,
-show me a vehicle-specific plan, original coding backup, restoration plan,
-expected readback, and stop conditions. Do not treat the author's driving
-experience or a matching model name as proof of compatibility.
+Read AGENTS.md and follow docs/agent-guide.md.
+I want to know whether the E84 steering setting could apply to my BMW.
+Start with the minimum details you need about my car and explain things
+in plain language. Check the failed attempts before suggesting a route.
+Before any change to the car, show me the exact plan, the original coding
+backup, how to restore it, and what could go wrong. Don't assume my car
+matches the author's just because both are E92s.
 ```
 
-Your agent should guide you through [the replication assessment](docs/replication.md). This repository supplies research context, not an automatic coding tool or a universal flash recipe.
+The [replication guide](docs/replication.md) covers the evidence needed before changing anything. My experience with one car does not establish that the setting is suitable for every E92.
 
-## What was the test car?
+## What changed on my car?
 
-The working identification was a 2012 BMW E92 LCI 318i with an N43 engine, model code `KD91`. The EPS reported application `6855892`, coding index `03`, hardware number `6851800`, and program reference `0512IC0F780A`. Its original active profile was `E92_basis`, index `09`. The target Servotronic entitlement was `0084/0001` and was absent in the saved diagnostic response.
+| Setting | Before | After |
+| --- | --- | --- |
+| Stored steering profile | E92_basis, `09` | E84_basis, `0E` |
+| Active profile after ignition cycle | E92_basis | E84 without Servotronic, `E84 ohne SA216` |
 
-Those identifiers are useful comparison points. They do not identify the complete physical rack or prove that another car can use the same calibration.
+The recorded change was **coding**, which selects existing settings. It was not an E84 firmware flash. No new Servotronic licence was created. [The full outcome](docs/outcome.md) includes the accepted write, a later tool error, and the independent readbacks.
 
-## What is included?
+My car was identified as a 2012 BMW E92 LCI 318i, N43 engine, model code `KD91`. The EPS reported application `6855892`, coding index `03`, hardware `6851800`, and program reference `0512IC0F780A`. These are useful comparison points, but they do not identify the complete physical steering rack.
 
-This is a curated research record, with an agent entry point, a readable account, a complete sanitized attempt ledger, and selected detailed evidence records. [Evidence and reproducibility](docs/evidence.md) explains what a reader can verify and what depends on private original captures.
+## Continue the research
 
-VINs, raw conversations, personal paths, vehicle connection tools, downloaded BMW firmware, coding datasets, third-party manuals, and local environments are excluded. No working FSC generator or bypass patch is included. The original private evidence was preserved separately during cleanup.
-
-## Repository map
-
-- [Agent guide](docs/agent-guide.md) is the single reading order for assistants.
-- [Timeline](docs/timeline.md) traces the investigation.
+- [Failed approaches](docs/failed-approaches.md) explains what didn't work and why.
+- [Open questions](docs/open-questions.md) shows where new evidence could help.
+- [Technical findings](docs/technical-findings.md) covers the controller and calibration analysis.
+- [All 114 attempts](docs/attempts.md) preserves the research record, also available as [JSON](data/attempts.json).
+- [Timeline](docs/timeline.md) follows the investigation from the original unlock goal to E84 coding.
 - [Tooling pitfalls](docs/tooling-pitfalls.md) covers wrong-module selection and partial job errors.
-- [Source and contribution notes](RIGHTS.md) describes the publication boundary.
+- [Evidence](docs/evidence.md) explains the sources and reproduction limits.
+
+VINs, raw conversations, personal paths, BMW firmware, third-party manuals, and vehicle connection tools are excluded. See the [source and contribution notes](RIGHTS.md).
 
 To check the public files without connecting to a car:
 
@@ -72,4 +55,4 @@ To check the public files without connecting to a car:
 python3 scripts/check_repository.py
 ```
 
-BMW and Servotronic are referenced to identify the systems studied. This project is independent of BMW.
+This project is independent of BMW.

@@ -1,0 +1,67 @@
+{
+  "attempt": "A108",
+  "date": "2026-11-01",
+  "quantity": "One isolated contribution to requested EPS motor torque, in raw counts",
+  "conditions": "Other composite correction terms and prior states were zero; mode was zero. Two explicit function entries, not a complete controller execution.",
+  "firmware_sha256": "dfb548d495979b4a315090da09a02cb0e96d7a2f04c29cc535b6ba74e7f0426c",
+  "source_graph_sha256": "15bafd110055c3458cbf37aaf22ef5d6c60e1dd570e7b714fa18aa7a49fc1991",
+  "source_matrix_sha256": "7e068473bbee1099e74f741d3c40eded580c707d9e0b52083605e87c77ad480f",
+  "samples": [
+    {
+      "speed_kmh": 0,
+      "handwheel_torque_raw": 68,
+      "handwheel_torque_nm": 1.0,
+      "e92_contribution": 125,
+      "e84_contribution": 182
+    },
+    {
+      "speed_kmh": 0,
+      "handwheel_torque_raw": 100,
+      "handwheel_torque_nm": 1.4705882352941178,
+      "e92_contribution": 197,
+      "e84_contribution": 307
+    },
+    {
+      "speed_kmh": 0,
+      "handwheel_torque_raw": 136,
+      "handwheel_torque_nm": 2.0,
+      "e92_contribution": 295,
+      "e84_contribution": 448
+    },
+    {
+      "speed_kmh": 0,
+      "handwheel_torque_raw": 207,
+      "handwheel_torque_nm": 3.0441176470588234,
+      "e92_contribution": 499,
+      "e84_contribution": 912
+    },
+    {
+      "speed_kmh": 15,
+      "handwheel_torque_raw": 68,
+      "handwheel_torque_nm": 1.0,
+      "e92_contribution": 60,
+      "e84_contribution": 62
+    },
+    {
+      "speed_kmh": 15,
+      "handwheel_torque_raw": 100,
+      "handwheel_torque_nm": 1.4705882352941178,
+      "e92_contribution": 105,
+      "e84_contribution": 104
+    },
+    {
+      "speed_kmh": 15,
+      "handwheel_torque_raw": 136,
+      "handwheel_torque_nm": 2.0,
+      "e92_contribution": 179,
+      "e84_contribution": 155
+    },
+    {
+      "speed_kmh": 15,
+      "handwheel_torque_raw": 207,
+      "handwheel_torque_nm": 3.0441176470588234,
+      "e92_contribution": 435,
+      "e84_contribution": 317
+    }
+  ]
+}

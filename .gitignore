@@ -7,10 +7,15 @@
 !/docs/
 !/data/
 !/scripts/
+!/assets/
 /docs/*
 !/docs/*.md
 /data/*
 !/data/attempts.json
+!/data/e84-vs-e92.json
 /scripts/*
 !/scripts/check_repository.py
+!/scripts/render_comparison.py
+/assets/*
+!/assets/e84-vs-e92.png
 **/__pycache__/

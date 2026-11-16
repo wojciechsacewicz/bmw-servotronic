@@ -21,6 +21,8 @@ Ask for the goal, model/engine/year, and any existing EPS identification/coding 
 
 Classify what is known as matched, mismatched, or unknown. A matching E92 badge alone is insufficient. A matching controller identifier still leaves physical rack applicability and tool recovery questions.
 
+The [comparison chart](comparison.md) shows one calculated term. Do not describe its percentages as measured lighter steering or total assistance.
+
 ## Choose the next useful action
 
 For a replication request, produce a vehicle-specific assessment using the template below. Missing evidence should lead to the smallest useful offline check, rather than a speculative write.
